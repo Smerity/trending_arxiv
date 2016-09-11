@@ -4,8 +4,6 @@ Keep track of arXiv papers and the tweet mini-commentaries that your friends are
 
 [Check out a static example of it](http://rawgit.com/Smerity/trending_arxiv/master/example/trending_arxiv.htm)
 
-![Image of static example](http://i.imgur.com/Cksj8Ns.jpg)
-
 To run:
 
 + Set up the config file with Twitter API credentials and Twitter users to follow
