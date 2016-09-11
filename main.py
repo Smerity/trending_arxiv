@@ -175,7 +175,8 @@ def refresh():
   total = 0
   for user in to_follow:
     fetch_timeline(user)
-    #fetch_search(user)
+    if config.get('fetch_search', False):
+      fetch_search(user)
   return flask.redirect(flask.url_for('show_all'))
 
 @app.route('/rate_limit')
