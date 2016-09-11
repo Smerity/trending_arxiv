@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h3>Rate Limits</h3>
+  <hr />
+  <p>
+  <b>User Timeline Queries:</b><br />
+  {% for key, value in rates['resources']['statuses']['/statuses/user_timeline'].items() %}
+    {{ key|title }}({{ value }}){% if not loop.last %}, {% endif %}
+  {% endfor %}
+  </p>
+  <hr />
+  <p>
+  <b>Search:</b><br />
+  {% for key, value in rates['resources']['search']['/search/tweets'].items() %}
+    {{ key|title }}({{ value }}){% if not loop.last %}, {% endif %}
+  {% endfor %}
+  </p>
+  <hr />
+{% endblock %}

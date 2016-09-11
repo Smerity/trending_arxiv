@@ -190,10 +190,10 @@ def refresh():
     flask.flash('No new papers were found')
   return flask.redirect(flask.url_for('show_all'))
 
-@app.route('/rate_limit')
-def rate_limit():
-  data = api.rate_limit_status()
-  return str(data)
+@app.route('/rate_limits')
+def rate_limits():
+  rates = api.rate_limit_status()
+  return flask.render_template('show_rates.html', rates=rates)
 
 @app.route('/tweets')
 def show_tweets():

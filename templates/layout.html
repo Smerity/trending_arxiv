@@ -17,6 +17,7 @@
   <ul class="nav nav-pills">
     <li role="presentation"><a href="{{ url_for('show_all') }}"><span aria-hidden="true" class="glyphicon glyphicon-file"></span> Papers</a></li>
     <li role="presentation"><a href="{{ url_for('show_tweets') }}"><span aria-hidden="true" class="glyphicon glyphicon-comment"></span> Tweets</a></li>
+    <li role="presentation"><a href="{{ url_for('rate_limits') }}"><span class="glyphicon glyphicon-signal" aria-hidden="true"></span> Rate Limits</a></li>
     <li role="presentation"><a href="{{ url_for('refresh') }}"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Refresh</a></li>
   </ul>
   {% with messages = get_flashed_messages() %}
