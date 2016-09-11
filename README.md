@@ -1,6 +1,8 @@
 # Trending arXiv
 
-Keep track of the papers and the tweet mini-commentaries that your friends are discussing on Twitter.
+Keep track of arXiv papers and the tweet mini-commentaries that your friends are discussing on Twitter.
+
+[Check out a static example of it](http://rawgit.com/Smerity/trending_arxiv/master/example/trending_arxiv.htm)
 
 To run:
 
