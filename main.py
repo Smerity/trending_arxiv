@@ -195,6 +195,10 @@ def rate_limit():
   data = api.rate_limit_status()
   return str(data)
 
+@app.route('/tweets')
+def show_tweets():
+  return flask.render_template('show_tweets.html', tweets=Tweet.query.order_by(Tweet.id.desc()).all())
+
 @app.route('/')
 def show_all():
   return flask.render_template('show_all.html', papers=Paper.query.order_by(Paper.published.desc()).all())
