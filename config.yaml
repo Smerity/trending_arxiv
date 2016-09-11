@@ -1,0 +1,11 @@
+# Secret key for the Flask web app
+app_secret_key: SecretGradientDescent
+
+# Space separated Twitter users programmatically to follow
+to_follow: 'Smerity'
+
+# Fill in your Twitter API details
+consumer_key: FILL
+consumer_secret: FILL
+access_token: FILL
+access_token_secret: FILL
