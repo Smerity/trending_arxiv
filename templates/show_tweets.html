@@ -2,8 +2,21 @@
 {% block body %}
   <h3>Tweets</h3>
   <hr />
-  {% for tweet in tweets if not tweet.is_retweet %}
+
+  {% if tweets.has_prev %}<a href="{{ url_for('show_all', page=tweets.prev_num) }}"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Newer tweets</a>
+    {% else %}<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Newer tweets{% endif %} |
+  {% if tweets.has_next %}<a href="{{ url_for('show_all', page=tweets.next_num) }}">Older tweets <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a>
+    {% else %}Older tweets <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>{% endif %}
+
+  <hr />
+  {% for tweet in tweets.items if not tweet.is_retweet %}
     <center><blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><a href="{{ tweet.link() }}"></a></blockquote></center>
   <hr />
   {% endfor %}
+
+  {% if tweets.has_prev %}<a href="{{ url_for('show_all', page=tweets.prev_num) }}"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Newer tweets</a>
+    {% else %}<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Newer tweets{% endif %} |
+  {% if tweets.has_next %}<a href="{{ url_for('show_all', page=tweets.next_num) }}">Older tweets <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a>
+    {% else %}Older tweets <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>{% endif %}
+
 {% endblock %}

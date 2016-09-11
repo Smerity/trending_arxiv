@@ -2,7 +2,14 @@
 {% block body %}
   <h3>Papers</h3>
   <hr />
-  {% for paper in papers %}
+
+  {% if papers.has_prev %}<a href="{{ url_for('show_all', page=papers.prev_num) }}"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Newer papers</a>
+    {% else %}<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Newer papers{% endif %} |
+  {% if papers.has_next %}<a href="{{ url_for('show_all', page=papers.next_num) }}">Older papers <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a>
+    {% else %}Older papers <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>{% endif %}
+
+  <hr />
+  {% for paper in papers.items %}
   <div>
     <h4><a href="{{ paper.link() }}" target="_blank">{{ paper.title }}</a> <a href="{{ paper.link('pdf') }}" name="PDF" target="_blank"><span class="glyphicon glyphicon-file" aria-hidden="true"></span></a></h4>
     <i>{{ paper.authors }}</i>
@@ -14,4 +21,9 @@
   </div>
   <hr />
   {% endfor %}
+
+  {% if papers.has_prev %}<a href="{{ url_for('show_all', page=papers.prev_num) }}"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Newer papers</a>
+    {% else %}<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Newer papers{% endif %} |
+  {% if papers.has_next %}<a href="{{ url_for('show_all', page=papers.next_num) }}">Older papers <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a>
+    {% else %}Older papers <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>{% endif %}
 {% endblock %}

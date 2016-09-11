@@ -196,12 +196,14 @@ def rate_limits():
   return flask.render_template('show_rates.html', rates=rates)
 
 @app.route('/tweets')
-def show_tweets():
-  return flask.render_template('show_tweets.html', tweets=Tweet.query.order_by(Tweet.id.desc()).all())
+@app.route('/tweets/<int:page>')
+def show_tweets(page=1):
+  return flask.render_template('show_tweets.html', tweets=Tweet.query.filter_by(is_retweet=False).order_by(Tweet.id.desc()).paginate(page=page, per_page=config.get('per_page', 20), error_out=False))
 
 @app.route('/')
-def show_all():
-  return flask.render_template('show_all.html', papers=Paper.query.order_by(Paper.published.desc()).all())
+@app.route('/<int:page>')
+def show_all(page=1):
+  return flask.render_template('show_all.html', papers=Paper.query.order_by(Paper.published.desc()).paginate(page=page, per_page=config.get('per_page', 20), error_out=False))
 
 if __name__ == '__main__':
   app.run()
