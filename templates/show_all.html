@@ -26,4 +26,6 @@
     {% else %}<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Newer papers{% endif %} |
   {% if papers.has_next %}<a href="{{ url_for('show_all', page=papers.next_num) }}">Older papers <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a>
     {% else %}Older papers <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>{% endif %}
+
+  <hr />
 {% endblock %}

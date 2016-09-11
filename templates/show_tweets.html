@@ -19,4 +19,5 @@
   {% if tweets.has_next %}<a href="{{ url_for('show_all', page=tweets.next_num) }}">Older tweets <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a>
     {% else %}Older tweets <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>{% endif %}
 
+  <hr />
 {% endblock %}
