@@ -4,7 +4,7 @@
   <hr />
   {% for paper in papers %}
   <div>
-    <h4><a href="http://arxiv.org/abs/{{ paper.arxiv_id }}" target="_blank">{{ paper.title }}</a></h4>
+    <h4><a href="{{ paper.link() }}" target="_blank">{{ paper.title }}</a> <a href="{{ paper.link('pdf') }}" name="PDF" target="_blank"><span class="glyphicon glyphicon-file" aria-hidden="true"></span></a></h4>
     <i>{{ paper.authors }}</i>
     <p>{{ paper.summary }}</p>
     <p>Captured tweets and retweets: {{ paper.tweets|length }}</p>

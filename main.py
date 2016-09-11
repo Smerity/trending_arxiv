@@ -32,6 +32,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tweet.db'
 db = SQLAlchemy(app)
 
 # Database
+
 retweets = db.Table('retweets',
   db.Column('tweet_id', db.Integer, db.ForeignKey('tweet.id')),
   db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
@@ -90,6 +91,9 @@ class Paper(db.Model):
 
   def __init__(self, arxiv_id):
     self.arxiv_id = arxiv_id
+
+  def link(self, section='abs'):
+    return 'http://arxiv.org/{}/{}'.format(section, self.arxiv_id)
 
   def update(self):
     url = 'http://export.arxiv.org/api/query?id_list={}&max_results=10'.format(self.arxiv_id)
@@ -158,7 +162,7 @@ def fetch_timeline(username):
   results = api.user_timeline(screen_name=username, count=200, page=0)
   tweets = [add_tweet(tweet) for tweet in results]
   total_processed = sum(1 if t else 0 for t in tweets)
-  flask.flash('Processed {} tweets with papers from the timeline of {}'.format(total_processed, username))
+  #flask.flash('Processed {} tweets with papers from the timeline of {}'.format(total_processed, username))
   return flask.redirect(flask.url_for('show_all'))
 
 @app.route('/fetch_search/<username>')
@@ -166,17 +170,24 @@ def fetch_search(username):
   results = api.search('@{} arxiv.org'.format(username), count=200)
   tweets = [add_tweet(tweet) for tweet in results]
   total_processed = sum(1 if t else 0 for t in tweets)
-  flask.flash('Processed {} tweets with papers from the search of {}'.format(total_processed, username))
+  #flask.flash('Processed {} tweets with papers from the search of {}'.format(total_processed, username))
   return flask.redirect(flask.url_for('show_all'))
 
 @app.route('/refresh')
 def refresh():
   to_follow = set(config['to_follow'].split())
-  total = 0
+  old_count = Paper.query.count()
   for user in to_follow:
     fetch_timeline(user)
     if config.get('fetch_search', False):
       fetch_search(user)
+  updated_count = Paper.query.count()
+  # Note how many new papers were added in this refresh
+  if old_count != updated_count:
+    diff = updated_count - old_count
+    flask.flash('Added {} new paper{}'.format(diff, 's' if diff > 1 else ''))
+  else:
+    flask.flash('No new papers were found')
   return flask.redirect(flask.url_for('show_all'))
 
 @app.route('/rate_limit')
