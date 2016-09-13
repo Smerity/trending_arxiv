@@ -3,21 +3,22 @@
   <h3>Tweets</h3>
   <hr />
 
-  {% if tweets.has_prev %}<a href="{{ url_for('show_all', page=tweets.prev_num) }}"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Newer tweets</a>
-    {% else %}<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Newer tweets{% endif %} |
-  {% if tweets.has_next %}<a href="{{ url_for('show_all', page=tweets.next_num) }}">Older tweets <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a>
-    {% else %}Older tweets <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>{% endif %}
+  <center>{{ render_pagination(tweets, 'show_tweets') }}</center>
 
   <hr />
   {% for tweet in tweets.items if not tweet.is_retweet %}
-    <center><blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><a href="{{ tweet.link() }}"></a></blockquote></center>
-  <hr />
+    <center><p>
+      {% for paper in tweet.papers %}
+        <a href="{{ paper.link() }}" target="_blank">{{ paper.title }}</a>
+        {% if not loop.last %} | {% endif %}
+      {% endfor %}
+    </p></center>
+    <center><blockquote class="twitter-tweet" data-conversation="" data-lang="en"><a href="{{ tweet.link() }}"></a></blockquote></center>
+    <center><p>Captured tweets and retweets: {{ tweet.retweets|length }}</p></center>
+    <hr />
   {% endfor %}
 
-  {% if tweets.has_prev %}<a href="{{ url_for('show_all', page=tweets.prev_num) }}"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Newer tweets</a>
-    {% else %}<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Newer tweets{% endif %} |
-  {% if tweets.has_next %}<a href="{{ url_for('show_all', page=tweets.next_num) }}">Older tweets <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a>
-    {% else %}Older tweets <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>{% endif %}
+  {{ render_pagination(tweets, 'show_tweets') }}
 
   <hr />
 {% endblock %}

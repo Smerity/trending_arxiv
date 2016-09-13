@@ -63,6 +63,7 @@ class User(db.Model):
 class Tweet(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   json = db.Column(db.Text)
+  # Issue: Keep track of what is being retweeted (i.e. this should be a foreign key or similar)
   is_retweet = db.Column(db.Boolean, default=False)
 
   author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -113,7 +114,6 @@ def tweet_has_url(t, url):
   return 'urls' in t.entities and any(u for u in t.entities['urls'] if url in u['expanded_url'].lower())
 
 def add_tweet(tweet):
-  print [url['expanded_url'] for url in tweet.entities['urls']]
   papers = [get_arxiv_id(url['expanded_url']) for url in tweet.entities['urls'] if get_arxiv_id(url['expanded_url'])]
   if not papers:
     return
@@ -176,18 +176,21 @@ def fetch_search(username):
 @app.route('/refresh')
 def refresh():
   to_follow = set(config['to_follow'].split())
-  old_count = Paper.query.count()
+  old_papers = Paper.query.count()
+  old_tweets = Tweet.query.count()
   for user in to_follow:
     fetch_timeline(user)
     if config.get('fetch_search', False):
       fetch_search(user)
-  updated_count = Paper.query.count()
+  updated_papers = Paper.query.count()
+  updated_tweets = Tweet.query.count()
   # Note how many new papers were added in this refresh
-  if old_count != updated_count:
-    diff = updated_count - old_count
-    flask.flash('Added {} new paper{}'.format(diff, 's' if diff > 1 else ''))
+  if old_papers != updated_papers or old_tweets != updated_tweets:
+    diff_papers = updated_papers - updated_papers
+    diff_tweets = updated_tweets - old_tweets
+    flask.flash('Added {} new paper{} and {} new tweet{}'.format(diff_papers, '' if diff_papers == 1 else 's', diff_tweets, '' if diff_tweets == 1 else 's'))
   else:
-    flask.flash('No new papers were found')
+    flask.flash('No new papers or tweets were found')
   return flask.redirect(flask.url_for('show_all'))
 
 @app.route('/rate_limits')
