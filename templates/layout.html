@@ -26,6 +26,7 @@
     <a href="{{ paper.link() }}" target="_blank">{{ paper.title }}</a>
     <a href="{{ paper.link('pdf') }}" name="PDF link" target="_blank"><span class="glyphicon glyphicon-file" aria-hidden="true"></span></a>
     <a href="{{ url_for('get_paper', arxiv_id=paper.arxiv_id) }}" name="Trending Arxiv link" target="_blank"><span class="glyphicon glyphicon-link" aria-hidden="true"></span></a>
+    <a href="https://twitter.com/search?f=tweets&q=arxiv.org%20{{ paper.arxiv_id }}" name="Search Twitter" target="_blank"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
   </h4>
   <i>{{ paper.authors }}</i>
   <p>{{ paper.summary }}</p>
