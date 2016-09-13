@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h3>Papers</h3>
+  <hr />
+
+  <center>{{ render_pagination(papers, 'show_papers') }}</center>
+
+  <hr />
+  {% for paper in papers.items %}
+    <div>
+      {{ render_paper(paper) }}
+    </div>
+  <hr />
+  {% endfor %}
+
+  <center>{{ render_pagination(papers, 'show_papers') }}</center>
+
+  <hr />
+{% endblock %}

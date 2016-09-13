@@ -157,13 +157,17 @@ def add_tweet(tweet):
 
 # Views
 
+def render_template(*args, **kwargs):
+  kwargs['config'] = config
+  return flask.render_template(*args, **kwargs)
+
 @app.route('/fetch_timeline/<username>')
 def fetch_timeline(username):
   results = api.user_timeline(screen_name=username, count=200, page=0)
   tweets = [add_tweet(tweet) for tweet in results]
   total_processed = sum(1 if t else 0 for t in tweets)
   #flask.flash('Processed {} tweets with papers from the timeline of {}'.format(total_processed, username))
-  return flask.redirect(flask.url_for('show_all'))
+  return flask.redirect(flask.url_for('show_papers'))
 
 @app.route('/fetch_search/<username>')
 def fetch_search(username):
@@ -171,7 +175,7 @@ def fetch_search(username):
   tweets = [add_tweet(tweet) for tweet in results]
   total_processed = sum(1 if t else 0 for t in tweets)
   #flask.flash('Processed {} tweets with papers from the search of {}'.format(total_processed, username))
-  return flask.redirect(flask.url_for('show_all'))
+  return flask.redirect(flask.url_for('show_papers'))
 
 @app.route('/refresh')
 def refresh():
@@ -191,22 +195,27 @@ def refresh():
     flask.flash('Added {} new paper{} and {} new tweet{}'.format(diff_papers, '' if diff_papers == 1 else 's', diff_tweets, '' if diff_tweets == 1 else 's'))
   else:
     flask.flash('No new papers or tweets were found')
-  return flask.redirect(flask.url_for('show_all'))
+  return flask.redirect(flask.url_for('show_papers'))
 
 @app.route('/rate_limits')
 def rate_limits():
   rates = api.rate_limit_status()
-  return flask.render_template('show_rates.html', rates=rates)
+  return render_template('show_rates.html', rates=rates)
 
 @app.route('/tweets')
 @app.route('/tweets/<int:page>')
 def show_tweets(page=1):
-  return flask.render_template('show_tweets.html', tweets=Tweet.query.filter_by(is_retweet=False).order_by(Tweet.id.desc()).paginate(page=page, per_page=config.get('per_page', 20), error_out=False))
+  return render_template('show_tweets.html', tweets=Tweet.query.filter_by(is_retweet=False).order_by(Tweet.id.desc()).paginate(page=page, per_page=config.get('per_page', 20), error_out=False))
 
 @app.route('/')
 @app.route('/<int:page>')
-def show_all(page=1):
-  return flask.render_template('show_all.html', papers=Paper.query.order_by(Paper.published.desc()).paginate(page=page, per_page=config.get('per_page', 20), error_out=False))
+def show_papers(page=1):
+  return render_template('show_papers.html', papers=Paper.query.order_by(Paper.published.desc()).paginate(page=page, per_page=config.get('per_page', 20), error_out=False))
+
+@app.route('/abs/<arxiv_id>')
+def get_paper(arxiv_id):
+  paper = Paper.query.filter_by(arxiv_id=arxiv_id).first()
+  return render_template('show_paper.html', paper=paper)
 
 if __name__ == '__main__':
   app.run()
