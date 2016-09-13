@@ -2,7 +2,7 @@
 
 Keep track of arXiv papers and the tweet mini-commentaries that your friends are discussing on Twitter.
 
-[Check out a static example of it](http://rawgit.com/Smerity/trending_arxiv/master/example/trending_arxiv.htm)
+[Check out my tailored version of it at http://trendingarxiv.smerity.com/](http://trendingarxiv.smerity.com/)
 
 To run:
 
