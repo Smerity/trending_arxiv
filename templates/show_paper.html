@@ -2,6 +2,7 @@
 {% block body %}
   <hr />
     <div>
+      {% if not paper.id %}<center><h1 class="text-danger"><div class="well"><span class="glyphicon glyphicon-floppy-remove" aria-hidden="true"></span></div></h1></center>{% endif %}
       {{ render_paper(paper) }}
     </div>
   <hr />

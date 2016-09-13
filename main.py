@@ -215,6 +215,11 @@ def show_papers(page=1):
 @app.route('/abs/<arxiv_id>')
 def get_paper(arxiv_id):
   paper = Paper.query.filter_by(arxiv_id=arxiv_id).first()
+  if not paper:
+    paper = Paper(arxiv_id)
+    paper.title = 'This paper wasn\'t stored - but these links to arXiv will work'
+    paper.authors = 'Mr. E.'
+    paper.summary = ''
   return render_template('show_paper.html', paper=paper)
 
 if __name__ == '__main__':
