@@ -8,6 +8,8 @@ import json
 import tweepy
 import yaml
 
+from functools import wraps
+
 from arxiv_regex import get_arxiv_id
 
 '''
@@ -161,24 +163,31 @@ def render_template(*args, **kwargs):
   kwargs['config'] = config
   return flask.render_template(*args, **kwargs)
 
-@app.route('/fetch_timeline/<username>')
+def requires_auth(*roles):
+  def wrapper(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+      if 'production' in config and config.get('refresh_secret', 'THIS_SHOULD_BE_SET_:(') != kwargs.get('passcode', None):
+        flask.flash('Refresh denied - stop teh hacking plz? :\'(')
+        return flask.redirect(flask.url_for('show_papers'))
+      return f(*args, **kwargs)
+    return wrapped
+  return wrapper
+
 def fetch_timeline(username):
   results = api.user_timeline(screen_name=username, count=200, page=0)
   tweets = [add_tweet(tweet) for tweet in results]
-  total_processed = sum(1 if t else 0 for t in tweets)
-  #flask.flash('Processed {} tweets with papers from the timeline of {}'.format(total_processed, username))
   return flask.redirect(flask.url_for('show_papers'))
 
-@app.route('/fetch_search/<username>')
 def fetch_search(username):
   results = api.search('@{} arxiv.org'.format(username), count=200)
   tweets = [add_tweet(tweet) for tweet in results]
-  total_processed = sum(1 if t else 0 for t in tweets)
-  #flask.flash('Processed {} tweets with papers from the search of {}'.format(total_processed, username))
   return flask.redirect(flask.url_for('show_papers'))
 
 @app.route('/refresh')
-def refresh():
+@app.route('/refresh/<passcode>')
+@requires_auth()
+def refresh(passcode=None):
   to_follow = set(config['to_follow'].split())
   old_papers = Paper.query.count()
   old_tweets = Tweet.query.count()
@@ -198,7 +207,9 @@ def refresh():
   return flask.redirect(flask.url_for('show_papers'))
 
 @app.route('/rate_limits')
-def rate_limits():
+@app.route('/rate_limits/<passcode>')
+@requires_auth()
+def rate_limits(passcode=None):
   rates = api.rate_limit_status()
   return render_template('show_rates.html', rates=rates)
 
